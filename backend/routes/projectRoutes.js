@@ -6,7 +6,7 @@ const {
   addProjectMember,
 } = require("../controllers/projectController");
 const { authenticate, authorize } = require("../middleware/authMiddleware");
-
+const { listTasks, createNewTask } = require("../controllers/taskController");
 const router = express.Router();
 
 // Every project route requires a logged-in user
@@ -16,5 +16,6 @@ router.get("/", listProjects);
 router.post("/", authorize("admin", "project_manager"), createNewProject);
 router.get("/:id", getProject);
 router.post("/:id/members", addProjectMember);
-
+router.get("/:id/tasks", listTasks);
+router.post("/:id/tasks", createNewTask);
 module.exports = router;

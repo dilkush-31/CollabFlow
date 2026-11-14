@@ -33,6 +33,9 @@ app.get("/api/db-test", async (req, res) => {
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
+const taskRoutes = require("./routes/taskRoutes");
+app.use("/api/tasks", taskRoutes);
+
 const projectRoutes = require("./routes/projectRoutes");
 app.use("/api/projects", projectRoutes);
 

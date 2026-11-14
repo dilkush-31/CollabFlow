@@ -1,3 +1,5 @@
+
+import KanbanBoard from "../components/kanbanBoard";  
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../services/api";
@@ -77,6 +79,7 @@ export default function ProjectDetail() {
 
       {message && <p style={{ color: "green" }}>{message}</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
+      <KanbanBoard projectId={id} myRole={data.myRole} members={data.members} />
     </div>
   );
 }
