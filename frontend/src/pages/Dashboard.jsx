@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Dashboard() {
@@ -14,6 +14,7 @@ export default function Dashboard() {
     <div style={{ maxWidth: 600, margin: "60px auto", fontFamily: "sans-serif" }}>
       <h2>Welcome, {user.name}</h2>
       <p>Role: {user.role}</p>
+      <p><Link to="/projects">Go to projects</Link></p>
       <p>The full dashboard comes on Day 7.</p>
       <button onClick={handleLogout}>Logout</button>
     </div>
