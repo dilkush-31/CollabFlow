@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { api } from "../services/api";
 import Loading from "../components/loading";
 import ErrorMessage from "../components/errorMessage";
+import NotificationBell from "../components/NotificationBell";
 
 function StatCard({ label, value, color }) {
   return (
@@ -43,6 +44,7 @@ export default function Dashboard() {
   return (
     <div style={{ maxWidth: 700, margin: "40px auto", fontFamily: "sans-serif" }}>
       <h2>Welcome, {user.name}</h2>
+      <NotificationBell />
       <p>Role: {user.role}</p>
 
       {loading && <Loading text="Loading dashboard..." />}

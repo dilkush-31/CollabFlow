@@ -8,6 +8,9 @@ const { findProjectById, getMembership } = require("../models/projectModel");
 
 const STATUSES = ["todo", "in_progress", "completed"];
 const PRIORITIES = ["low", "medium", "high"];
+const { createNotification } = require("../services/notificationService");
+const { logActivity } = require("../services/activityService");
+const { emitToProject } = require("../sockets");
 
 // Returns "manager", "member", or null. Admins always count as managers.
 const getAccess = async (user, projectId) => {
@@ -72,6 +75,23 @@ const createNewTask = async (req, res) => {
     });
 
     const task = await findTaskById(taskId);
+    emitToProject(projectId, "task:created", task);
+
+await logActivity({
+  projectId,
+  userId: req.user.id,
+  action: "task_created",
+  details: task.title,
+});
+
+if (task.assigned_to && task.assigned_to !== req.user.id) {
+  await createNotification({
+    userId: task.assigned_to,
+    type: "task_assigned",
+    message: `You were assigned "${task.title}"`,
+    taskId: task.id,
+  });
+}
     res.status(201).json({ message: "Task created", task });
   } catch (error) {
     res.status(500).json({ message: "Could not create task", error: error.message });
@@ -127,6 +147,24 @@ const updateExistingTask = async (req, res) => {
     await updateTask(taskId, fields);
 
     const updated = await findTaskById(taskId);
+    emitToProject(task.project_id, "task:updated", updated);
+
+await logActivity({
+  projectId: task.project_id,
+  userId: req.user.id,
+  action: "task_updated",
+  details: `${updated.title}: ${Object.keys(fields).join(", ")}`,
+});
+
+if (fields.assigned_to && fields.assigned_to !== task.assigned_to && fields.assigned_to !== req.user.id) {
+  await createNotification({
+    userId: fields.assigned_to,
+    type: "task_assigned",
+    message: `You were assigned "${updated.title}"`,
+    taskId: updated.id,
+  });
+}
+
     res.json({ message: "Task updated", task: updated });
   } catch (error) {
     res.status(500).json({ message: "Could not update task", error: error.message });

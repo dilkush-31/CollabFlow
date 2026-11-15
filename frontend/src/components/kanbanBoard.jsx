@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { getSocket } from "../services/socket";
+import TaskComments from "./taskComments";
 
 const COLUMNS = [
   { key: "todo", label: "To Do" },
@@ -15,6 +17,7 @@ export default function KanbanBoard({ projectId, myRole, members }) {
   const [tasks, setTasks] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState("");
+  const [openComments, setOpenComments] = useState(null);
 
   const isManager = myRole === "manager";
 
@@ -26,6 +29,24 @@ export default function KanbanBoard({ projectId, myRole, members }) {
 
   useEffect(() => {
     loadTasks();
+  }, [projectId]);
+
+  // Live updates: refresh the board when anyone in the project changes a task
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return;
+
+    socket.emit("project:join", projectId);
+
+    const refresh = () => loadTasks();
+    socket.on("task:created", refresh);
+    socket.on("task:updated", refresh);
+
+    return () => {
+      socket.emit("project:leave", projectId);
+      socket.off("task:created", refresh);
+      socket.off("task:updated", refresh);
+    };
   }, [projectId]);
 
   const handleCreate = async (e) => {
@@ -130,6 +151,17 @@ export default function KanbanBoard({ projectId, myRole, members }) {
                         <option key={c.key} value={c.key}>{c.label}</option>
                       ))}
                     </select>
+                  )}
+
+                  <button
+                    onClick={() => setOpenComments(openComments === task.id ? null : task.id)}
+                    style={{ marginTop: 6, fontSize: 12 }}
+                  >
+                    {openComments === task.id ? "Hide comments" : "Comments"}
+                  </button>
+
+                  {openComments === task.id && (
+                    <TaskComments taskId={task.id} projectId={projectId} />
                   )}
                 </div>
               ))}
