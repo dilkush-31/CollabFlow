@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import { getSocket } from "../services/socket";
-import Loading from "./loading";
-import ErrorMessage from "./errorMessage";
+import loading from "/loading";
+import errorMessage from "/errorMessage";
 
 export default function TaskComments({ taskId, projectId }) {
   const [comments, setComments] = useState([]);
