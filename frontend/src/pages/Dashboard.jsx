@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../services/api";
-import Loading from "../components/Loading";
-import ErrorMessage from "../components/ErrorMessage";
+import Loading from "../components/loading";
+import ErrorMessage from "../components/errorMessage";
 import NotificationBell from "../components/NotificationBell";
 
 function StatCard({ label, value, color }) {
