@@ -1,4 +1,9 @@
-const { countProjects, countTasks } = require("../models/dashboardModel");
+const {
+  countProjects,
+  countTasks,
+  getOverdueTasks,
+  getProjectProgress,
+} = require("../models/dashboardModel");
 
 const getSummary = async (req, res) => {
   try {
@@ -6,11 +11,22 @@ const getSummary = async (req, res) => {
       countProjects(req.user),
       countTasks(req.user),
     ]);
-
     res.json({ projects, tasks });
   } catch (error) {
     res.status(500).json({ message: "Could not load dashboard", error: error.message });
   }
 };
 
-module.exports = { getSummary };
+const getOverview = async (req, res) => {
+  try {
+    const [overdue, progress] = await Promise.all([
+      getOverdueTasks(req.user),
+      getProjectProgress(req.user),
+    ]);
+    res.json({ overdue, progress });
+  } catch (error) {
+    res.status(500).json({ message: "Could not load overview", error: error.message });
+  }
+};
+
+module.exports = { getSummary, getOverview };
