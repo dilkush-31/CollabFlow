@@ -7,7 +7,6 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // On page load, check whether a saved token is still valid
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -20,6 +19,16 @@ export function AuthProvider({ children }) {
       .then((data) => setUser(data.user))
       .catch(() => localStorage.removeItem("token"))
       .finally(() => setLoading(false));
+  }, []);
+
+  // Any 401 from the API clears the session
+  useEffect(() => {
+    const handleExpired = () => {
+      localStorage.removeItem("token");
+      setUser(null);
+    };
+    window.addEventListener("auth:expired", handleExpired);
+    return () => window.removeEventListener("auth:expired", handleExpired);
   }, []);
 
   const saveSession = (token, userData) => {
