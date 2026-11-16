@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import { getSocket } from "../services/socket";
-import loading from "./loading";
-import errorMessage from "./errorMessage";
+import Loading from "./Loading";
+import ErrorMessage from "./ErrorMessage";
 
 export default function TaskComments({ taskId, projectId }) {
   const [comments, setComments] = useState([]);
@@ -51,8 +51,8 @@ export default function TaskComments({ taskId, projectId }) {
 
   return (
     <div style={{ marginTop: 10, paddingTop: 10, borderTop: "1px solid #eee" }}>
-      {loading && <loading text="Loading comments..." />}
-      <errorMessage message={error} onRetry={load} />
+      {loading && <Loading text="Loading comments..." />}
+      <ErrorMessage message={error} onRetry={load} />
 
       {comments.map((c) => (
         <div key={c.id} style={{ marginBottom: 8, fontSize: 14 }}>
@@ -74,4 +74,5 @@ export default function TaskComments({ taskId, projectId }) {
       </form>
     </div>
   );
+  
 }

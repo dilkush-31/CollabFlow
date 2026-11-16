@@ -2,10 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../services/api";
-import Loading from "./components/Loading";
-import ErrorMessage from "./components/ErrorMessage";
+import Loading from "../components/Loading";
+import ErrorMessage from "../components/ErrorMessage";
 import NotificationBell from "../components/NotificationBell";
-
 function StatCard({ label, value, color }) {
   return (
     <div style={{ flex: 1, minWidth: 130, border: "1px solid #ddd", borderRadius: 8, padding: 14 }}>
