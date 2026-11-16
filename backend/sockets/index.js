@@ -5,9 +5,9 @@ const { getMembership } = require("../models/projectModel");
 let io = null;
 
 const initSocket = (httpServer) => {
-  io = new Server(httpServer, {
-    cors: { origin: "http://localhost:5173" },
-  });
+ io = new Server(httpServer, {
+  cors: { origin: process.env.CLIENT_URL || "http://localhost:5173" },
+});
 
   // Every socket connection must send a valid JWT
   io.use((socket, next) => {
