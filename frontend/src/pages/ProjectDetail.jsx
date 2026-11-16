@@ -1,5 +1,5 @@
 
-import KanbanBoard from "../components/kanbanBoard";  
+import KanbanBoard from "../components/KanbanBoard";  
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../services/api";
